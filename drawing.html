@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<title>CS465 Assignent 1</title>
+<html>
+<head>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec2 position;
+uniform vec2 resolution;
+attribute vec4 vCol; 
+varying vec4 fCol;
+void main() {
+    vec2 zeroToOne = position / resolution; // convert the rectangle with pixels from 0.0 to 1.0
+    vec2 zeroToTwo = zeroToOne * 2.0; // convert from 0->1 to 0->2
+    vec2 clipSpace = zeroToTwo - 1.0; // convert from 0->2 to -1->+1 (clipspace)
+    gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+    gl_PointSize = 10.0;
+    fCol = vCol;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 fCol;
+void main() {
+    gl_FragColor = fCol;
+}
+</script>
+
+<script type="text/javascript" src="webgl-utils.js"></script>
+<script type="text/javascript" src="initShaders.js"></script>
+<script type="text/javascript" src="MV.js"></script>
+<script type="text/javascript" src="drawing.js"></script>  
+</head>
+<body style="display: flex;">
+    <div>
+    <canvas id="gl-canvas" width="800" height="800" style="border-style: solid;"></canvas>  
+    <table>
+		<tbody><tr>
+			<td>
+				<canvas id="gl-color-canvas" width="256" height="256" style="border-style: solid; "></canvas>
+			</td>
+			<td style="padding-left:20px;">
+				<h2>Colour Values</h2>
+				<h3>HSV</h3>
+				<p id="hsv">0, 0, 0</p>
+				<h3>RGB 0-255 byte </h3>
+				<p id="rgbByte">0, 0, 0</p>
+				<h3>RGB 0.0-1.0 float </h3>
+				<p id="rgbFloat">0.0, 0.0, 0.0</p>
+				<p>
+					gamma: <input type="text" id="gammabox" size="4" value="1.0">
+				</p>
+			</td>
+		</tr>
+	</tbody></table>
+</div>
+<div style="padding-left: 10px;">
+    <div>
+        <select id = "color_pallet" size = "8">
+            <option value = "0">Black</option>
+            <option value = "1">Red</option>
+            <option value = "2">Yellow</option>
+            <option value = "3">Green</option>
+            <option value = "4">Blue</option>
+            <option value = "5">Magenta</option>
+            <option value = "6">Cyan</option>        
+            <option value = "7">Grey</option>
+        </select>
+    </div>
+    <div>
+        <button id = "Undo" style=" background-image:url(icons/undo.png); height: 64px; width: 64px;" ></button>
+        Undo
+    </div> 
+    <div>
+        <button id = "Redo" style=" background-image:url(icons/redo.png); height: 64px; width: 64px;" ></button>
+        Redo
+    </div> 
+    <div>
+        <button id = "Brush" style=" background-image:url(icons/brush.png); height: 64px; width: 64px;" ></button>
+        Brush
+    </div> 
+    <div>
+        <button id = "Eraser" style=" background-image:url(icons/eraser.png); height: 64px; width: 64px;" ></button>
+        Eraser
+    </div>      
+    <div>
+        <button id = "Select" style=" background-image:url(icons/select.png); height: 64px; width: 64px;" ></button>
+        Select
+    </div> 
+    <div>
+        <button onclick="saveCoordinatesFile()" style=" background-image:url(icons/save.png); height: 64px; width: 64px;" ></button>
+        Save Strokes
+    </div> 
+    <div>
+        <button onclick="saveCoordinatesColorFile()" style=" background-image:url(icons/save.png); height: 64px; width: 64px;" ></button>
+        Save Colors
+    </div>      
+    <div>
+        <input type='file' accept='text/*' onchange='loadCoordinatesFile(event)'><br>        
+        Select coordinates.txt
+    </div> 
+    <div>
+        <input type='file' accept='text/*' onchange='loadCoordinatesColorFile(event)'><br>
+        Select coordinatesColor.txt
+    </div> 
+    <div>
+        <button onclick="loadFiles()" style=" background-image:url(icons/load.png); height: 64px; width: 64px;" ></button>
+        Load Files
+    </div>
+    <div>
+        <select id = "shapes" size = "3">
+            <option value = "0">Triangle</option>
+            <option value = "1">Rectangle</option>
+            <option value = "2">Ellipse</option>
+        </select>
+    </div>
+</div>
+
+</body>
+</html>
